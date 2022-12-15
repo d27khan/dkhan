@@ -58,7 +58,7 @@ export default function Home() {
         
           <div className="text-center py-10 max-w-screen-xl mx-auto">
           <h2 className="text-5xl pt-40 pb-10 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
-              Hi, Iapos;m Daniel
+              Hi, I&apos;m Daniel
             </h2>
             <h3 className="text-5xl pb-40 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
               Welcome to my website!
@@ -233,7 +233,7 @@ export default function Home() {
         <section className="text-white" id="CurrentProjects">
           
           <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold sm:text-4xl text-center text-gray-800 dark:text-gray-200">What Iapos;m up to</h2>
+          <h2 className="text-3xl font-bold sm:text-4xl text-center text-gray-800 dark:text-gray-200">What I&apos;m up to</h2>
             
             <div className="mx-auto max-w-lg py-4">
               
