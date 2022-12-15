@@ -12,9 +12,6 @@ import { ImAmazon } from "react-icons/im";
 import { VscWarning } from "react-icons/vsc";
 
 import { useState } from "react";
-import code from "../public/download.png";
-import Image from "next/image";
-import logo from "../public/favicon.ico";
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
 
