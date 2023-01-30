@@ -277,7 +277,7 @@ export default function Home() {
           <a href="#"><AiOutlineToTop  className="text-4xl cursor-pointer font-black text-gray-900 dark:text-white justify-end"/></a>
           </div>
         </section>
-        <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+        
       </body>
       <footer className=" bg-red pb-10 bg-stone-100 px-10 dark:bg-zinc-800 sm:px-20 lg:px-40">
           <div className="max-w-screen-xl mx-auto">
