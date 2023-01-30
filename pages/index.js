@@ -10,8 +10,8 @@ import { AiOutlineToTop } from "react-icons/ai";
 import { MdOutlineFeaturedPlayList } from "react-icons/md";
 import { ImAmazon } from "react-icons/im";
 import { VscWarning } from "react-icons/vsc";
-
 import { useState } from "react";
+
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
 
@@ -31,6 +31,7 @@ export default function Home() {
             <a className="text-gray-900 dark:text-white" href="#Experience">Experience</a>
             <a className="text-gray-900 dark:text-white" href="#Projects">Projects</a>
             <a className="text-gray-900 dark:text-white" href="#Contact">Contact</a>
+            <a className="text-gray-900 dark:text-white" href="/resume.png">Resume</a>
             <TfiLightBulb
                   onClick={() => setDarkMode(!darkMode)}
                   className=" cursor-pointer text-md px-2 ml-4 font-black text-gray-900 dark:text-white"
@@ -39,22 +40,19 @@ export default function Home() {
       </div>
 
       <div className= "lg:hidden">
-        <nav className="flex items-center justify-center overflow-x-auto py-4 text-sm font-medium ">
-          <a className="flex-shrink-0 pr-6 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100 tracking-widest font-black text-transparent" href="#">DK</a>
+      <div class="grid grid-rows-3 grid-flow-col gap-7 text-left p-6">
+          <a className="flex-shrink-0 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100  font-black text-transparent" href="#">Daniel Khan</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#About">About</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Experience">Experience</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Projects">Projects</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Contact">Contact</a>
-          <TfiLightBulb
-                  onClick={() => setDarkMode(!darkMode)}
-                  className=" cursor-pointer text-md px-2 ml-4 font-black text-gray-900 dark:text-white"
-                />
-        </nav>
+          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="/resume.png">Resume</a>
+      </div>
       </div>
 
       </header>
       
-      <main className="bg-stone-100 md:px-30 dark:bg-zinc-800 sm:px-20 lg:px-40">
+      <body className="bg-stone-100 md:px-30 dark:bg-zinc-800 sm:px-20 lg:px-40">
         
           <div className="text-center py-10 max-w-screen-xl mx-auto">
           <h2 className="text-5xl pt-40 pb-10 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
@@ -279,8 +277,8 @@ export default function Home() {
           <a href="#"><AiOutlineToTop  className="text-4xl cursor-pointer font-black text-gray-900 dark:text-white justify-end"/></a>
           </div>
         </section>
-
-      </main>
+        <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+      </body>
       <footer className=" bg-red pb-10 bg-stone-100 px-10 dark:bg-zinc-800 sm:px-20 lg:px-40">
           <div className="max-w-screen-xl mx-auto">
             <p className="text-center font-light py-2 leading-8 justify-center text-gray-800 dark:text-gray-200">
