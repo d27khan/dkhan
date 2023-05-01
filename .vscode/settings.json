@@ -1,7 +1,11 @@
 {
-
-    "css.lint.unknownAtRules": "ignore",
-    "editor.quickSuggestions": {
-        "strings": true
-      }
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.lint": {
+    "enabled": true,
+    "mode": "jit"
+  }
 }
