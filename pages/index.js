@@ -11,6 +11,8 @@ import { MdOutlineFeaturedPlayList } from "react-icons/md";
 import { ImAmazon } from "react-icons/im";
 import { VscWarning } from "react-icons/vsc";
 import { useState } from "react";
+import {} from "flowbite-react";
+
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
@@ -24,6 +26,8 @@ export default function Home() {
       </Head>
       
       <header aria-label="Site Header"  className="bg-stone-100 px-8 dark:bg-zinc-800 md:px-10 lg:px-40">
+
+
         <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4">
           <nav aria-label="Site Nav" className="hidden items-center justify-center gap-8 py-4 text-sm font-medium lg:flex lg:w-0 lg:flex-1">
           <a className="flex-shrink-0 pr-8 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100 tracking-widest font-black text-transparent" href="#">Daniel Khan</a>
@@ -40,7 +44,7 @@ export default function Home() {
       </div>
 
       <div className= "lg:hidden">
-      <div class="grid grid-rows-3 grid-flow-col gap-7 text-left p-6">
+      <div className="grid grid-rows-3 grid-flow-col gap-7 text-left p-6">
           <a className="flex-shrink-0 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100  font-black text-transparent" href="#">Daniel Khan</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#About">About</a>
           <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Experience">Experience</a>
@@ -52,8 +56,7 @@ export default function Home() {
 
       </header>
       
-      <body className="bg-stone-100 md:px-30 dark:bg-zinc-800 sm:px-20 lg:px-40">
-        
+      <body className="bg-stone-100 dark:bg-zinc-800">
           <div className="text-center py-10 max-w-screen-xl mx-auto">
           <h2 className="text-5xl pt-40 pb-10 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
               Hi, I&apos;m Daniel
