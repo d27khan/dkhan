@@ -62,7 +62,7 @@ export default function Home() {
               Hi, I&apos;m Daniel
             </h2>
             <h3 className="text-5xl pb-40 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
-              Welcome to my website!
+              Welcome to my  new website!
             </h3>
           </div>
           
