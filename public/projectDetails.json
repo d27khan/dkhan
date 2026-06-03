@@ -1,0 +1,16 @@
+[
+    {
+      "project_name": "DermaCare",
+      "project_url": "https://github.com/d27khan",
+      "project_tech": ["Python", "Google Cloud"],
+      "project_desc": "A Web Application that analyzes your skin using machine learning"
+    },
+    {
+        "project_name": "DermaCare",
+        "project_url": "https://github.com/d27khan",
+        "project_tech": ["Python", "Google Cloud"],
+        "project_desc": "A Web Application that analyzes your skin using machine learning"
+      }
+  
+  ]
+  

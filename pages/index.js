@@ -1,301 +1,728 @@
 import Head from "next/head";
-import {VscGithubInverted,} from "react-icons/vsc";
-import {SiLinkedin,} from "react-icons/si";
-import {BsFillPinMapFill} from "react-icons/bs";
-import {GrMail,} from "react-icons/gr";
-import {IoMdSchool,} from "react-icons/io";
+import { VscGithubInverted } from "react-icons/vsc";
+import { SiLinkedin } from "react-icons/si";
+import { GrMail } from "react-icons/gr";
+import { BsFillPinMapFill } from "react-icons/bs";
 import { TfiLightBulb } from "react-icons/tfi";
-import { RiGithubLine } from "react-icons/ri";
-import { AiOutlineToTop } from "react-icons/ai";
-import { MdOutlineFeaturedPlayList } from "react-icons/md";
-import { ImAmazon } from "react-icons/im";
-import { VscWarning } from "react-icons/vsc";
-import { useState } from "react";
-import {} from "flowbite-react";
+import { useState, useEffect, useRef } from "react";
 
+// ─── Fade-in on scroll hook ────────────────────────────────────────────────
+function useFadeIn() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("visible");
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.12 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
 
+// ─── Section wrapper with fade ────────────────────────────────────────────
+function FadeSection({ children, className = "" }) {
+  const ref = useFadeIn();
+  return (
+    <div ref={ref} className={`fade-section ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+// ─── Experience data ───────────────────────────────────────────────────────
+const experiences = [
+  {
+    role: "Senior Product Analyst, Supply Chain Automation",
+    company: "Loblaw Companies Limited",
+    location: "Brampton, ON",
+    period: "Nov 2025 – Present",
+    bullets: [
+      "Work In Progress..."],
+  },
+  {
+    role: "Product Analyst, Supply Chain Automation",
+    company: "Loblaw Companies Limited",
+    location: "Brampton, ON",
+    period: "Oct 2023 – Nov 2025",
+    bullets: [
+      "Work In Progress..."],
+  },
+  {
+    role: "Product Engineering Intern",
+    company: "Diversio Inc.",
+    location: "Toronto, ON",
+    period: "May 2022 – Sept 2023",
+    bullets: [
+      "Embedded an ETL pipeline into the Django backend automating data collection from multiple sources, reducing manual processes by over 90%.",
+      "Implemented an email notification and scheduling system delivering real-time alerts to over 500 users.",
+    ],
+  },
+  {
+    role: "Automation Developer Intern",
+    company: "Loblaw Companies Limited",
+    location: "Brampton, ON",
+    period: "May – Dec 2021",
+    bullets: [
+      "Developed a Python monitoring script on AIX for hourly disk storage threshold checks, auto-clearing cached data and alerting admins to prevent capacity incidents.",
+    ],
+  },
+];
+
+// ─── Projects data ────────────────────────────────────────────────────────
+const projects = [
+  {
+    title: "Distributed System Reliability & Observability Platform",
+    stack: ["Python", "Docker", "Kubernetes", "Prometheus", "Grafana", "k6"],
+    description:
+      "Containerized microservice system with a full observability stack — metrics collection, structured logging, real-time alerting. Implemented production failure simulations (latency injection, crash loops, resource exhaustion) with RCA documentation. Built CI/CD pipelines and load testing via k6.",
+    link: "https://github.com/d27khan",
+  },
+  {
+    title: "Log Monitoring & Alerting System",
+    stack: ["Python", "Linux", "Bash"],
+    description:
+      "Log processing pipeline to parse system events, detect anomalies, and trigger severity-based alerts. Designed monitoring logic to surface failure patterns and accelerate incident debugging.",
+    link: "https://github.com/d27khan",
+  },
+  {
+    title: "Manhattan WMS AI Agents",
+    stack: ["GCP", "Python", "CI/CD"],
+    description:
+      "Designed and deployed AI agents on Google Cloud Platform to support day-to-day warehouse operations, including a monitoring and alerting agent for production deployments reducing manual effort by ~83%.",
+    link: null,
+  },
+];
+
+// ─── Education data ───────────────────────────────────────────────────────
+const education = [
+  {
+    degree: "M.Sc. Electrical & Computer Engineering",
+    school: "University of Colorado Boulder",
+    detail: "Focus: Computer Architecture & Systems · Part-Time",
+    period: "2026 – 2028",
+  },
+  {
+    degree: "B.Eng. Computer Engineering",
+    school: "Toronto Metropolitan University",
+    detail: "",
+    period: "2018 – 2023",
+  },
+];
+
+// ─── Skills ───────────────────────────────────────────────────────────────
+const skills = {
+  Languages: ["Python", "Bash", "SQL", "C", "Java", "JavaScript", "Go", "Git"],
+  "Infrastructure & Observability": [
+    "Docker",
+    "Kubernetes",
+    "Terraform",
+    "GitLab CI",
+    "Prometheus",
+    "Grafana",
+    "Sentry",
+    "Linux/Unix",
+  ],
+  "Networking & Security": [
+    "AlgoSec / FireFlow",
+    "DC Network Architecture",
+    "Connectivity Testing",
+    "DigiCert",
+  ],
+  Tools: [
+    "ServiceNow ITSM & CMDB",
+    "Jira & Confluence",
+    "Postman",
+    "Claude Code CLI",
+    "IBM Cognos",
+  ],
+};
+
+// ─── Main Component ────────────────────────────────────────────────────────
 export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className={darkMode ? "dark" : ""}>
       <Head>
         <title>Daniel Khan</title>
-        <meta name="description" content="Generated by create next app" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="Daniel Khan – Engineer" />
+        <link rel="icon" href="/favicon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+          rel="stylesheet"
+        />
       </Head>
-      
-      <header aria-label="Site Header"  className="bg-stone-100 px-8 dark:bg-zinc-800 md:px-10 lg:px-40">
 
+      <style jsx global>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4">
-          <nav aria-label="Site Nav" className="hidden items-center justify-center gap-8 py-4 text-sm font-medium lg:flex lg:w-0 lg:flex-1">
-          <a className="flex-shrink-0 pr-8 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100 tracking-widest font-black text-transparent" href="#">Daniel Khan</a>
-            <a className="text-gray-900 dark:text-white" href="#About">About</a>
-            <a className="text-gray-900 dark:text-white" href="#Experience">Experience</a>
-            <a className="text-gray-900 dark:text-white" href="#Projects">Projects</a>
-            <a className="text-gray-900 dark:text-white" href="#Contact">Contact</a>
-            <a className="text-gray-900 dark:text-white" href="/resume.png">Resume</a>
-            <TfiLightBulb
-                  onClick={() => setDarkMode(!darkMode)}
-                  className=" cursor-pointer text-md px-2 ml-4 font-black text-gray-900 dark:text-white"
-                />
-          </nav>
-      </div>
+        :root {
+          --bg: #f2f2f2;
+          --bg-card: #ffffff;
+          --bg-card2: #e8e8e8;
+          --text: #111111;
+          --text-secondary: #555555;
+          --accent: #0060c7;
+          --accent-soft: #ddeeff;
+          --border: rgba(0,0,0,0.10);
+          --nav-bg: rgba(242,242,242,0.80);
+          --tag-bg: #e0e0e0;
+          --tag-text: #111111;
+          --hero-hi: #333333;
+        }
+        .dark {
+          --bg: #111111;
+          --bg-card: #1e1e1e;
+          --bg-card2: #2a2a2a;
+          --text: #f0f0f0;
+          --text-secondary: #9a9a9a;
+          --accent: #3b9eff;
+          --accent-soft: #0a1e38;
+          --border: rgba(255,255,255,0.09);
+          --nav-bg: rgba(17,17,17,0.80);
+          --tag-bg: #2e2e2e;
+          --tag-text: #e8e8e8;
+          --hero-hi: #cccccc;
+        }
 
-      <div className= "lg:hidden">
-      <div className="grid grid-rows-3 grid-flow-col gap-7 text-left p-6">
-          <a className="flex-shrink-0 pl-4 bg-clip-text bg-gradient-to-r from-red-900 to-slate-900 dark:to-slate-100  font-black text-transparent" href="#">Daniel Khan</a>
-          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#About">About</a>
-          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Experience">Experience</a>
-          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Projects">Projects</a>
-          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="#Contact">Contact</a>
-          <a className="flex-shrink-0 pl-4  text-gray-900 dark:text-white" href="/resume.png">Resume</a>
-      </div>
-      </div>
+        html { scroll-behavior: smooth; }
 
-      </header>
-      
-      <body className="bg-stone-100 dark:bg-zinc-800">
-          <div className="text-center py-10 max-w-screen-xl mx-auto">
-          <h2 className="text-5xl pt-40 pb-10 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
-              Hi, I&apos;m Daniel
-            </h2>
-            <h3 className="text-5xl pb-40 text-red-600 dark:text-red-400 sm:text-6xl tracking-tight font-extrabold">
-              Welcome to my  new website!
-            </h3>
+        body {
+          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          transition: background 0.3s, color 0.3s;
+          line-height: 1.6;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Nav ── */
+        .nav {
+          position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+          backdrop-filter: saturate(180%) blur(20px);
+          -webkit-backdrop-filter: saturate(180%) blur(20px);
+          background: var(--nav-bg);
+          border-bottom: 1px solid var(--border);
+          transition: all 0.3s;
+        }
+        .nav-inner {
+          max-width: 1000px; margin: 0 auto;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0 24px; height: 52px;
+        }
+        .nav-logo {
+          font-size: 16px; font-weight: 600; color: var(--text);
+          text-decoration: none; letter-spacing: -0.01em;
+        }
+        .nav-links {
+          display: flex; gap: 32px; list-style: none;
+        }
+        .nav-links a {
+          font-size: 13px; color: var(--text-secondary);
+          text-decoration: none; cursor: pointer;
+          transition: color 0.2s;
+          letter-spacing: 0.01em;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-actions { display: flex; align-items: center; gap: 16px; }
+        .dark-toggle {
+          background: none; border: none; cursor: pointer;
+          color: var(--text-secondary); font-size: 16px;
+          display: flex; align-items: center;
+          transition: color 0.2s;
+        }
+        .dark-toggle:hover { color: var(--text); }
+
+        /* ── Fade-in ── */
+        .fade-section {
+          opacity: 0; transform: translateY(28px);
+          transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-section.visible { opacity: 1; transform: none; }
+
+        /* ── Hero ── */
+        .hero {
+          min-height: 100vh;
+          display: flex; flex-direction: column;
+          justify-content: center; align-items: flex-start;
+          max-width: 1000px; margin: 0 auto;
+          padding: 120px 24px 80px;
+        }
+        .hero-eyebrow {
+          font-size: 14px; font-weight: 500;
+          color: var(--accent); letter-spacing: 0.06em;
+          text-transform: uppercase; margin-bottom: 20px;
+        }
+        .hero-title {
+          font-size: clamp(52px, 8vw, 96px);
+          font-weight: 700; line-height: 1.04;
+          letter-spacing: -0.04em;
+          margin-bottom: 24px;
+          display: flex; flex-direction: column; gap: 4px;
+        }
+        .hero-hi { color: var(--text-secondary); }
+        .hero-name { color: var(--text); }
+        .hero-name em { color: var(--accent); font-style: normal; }
+        .hero-sub {
+          font-size: clamp(18px, 2.5vw, 22px);
+          color: var(--text-secondary); font-weight: 300;
+          max-width: 560px; line-height: 1.5; margin-bottom: 40px;
+        }
+        .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-primary {
+          background: var(--accent); color: #fff;
+          border: none; border-radius: 980px;
+          padding: 12px 24px; font-size: 15px; font-weight: 500;
+          cursor: pointer; text-decoration: none;
+          transition: opacity 0.2s, transform 0.2s;
+          font-family: inherit;
+        }
+        .btn-primary:hover { opacity: 0.85; transform: scale(0.98); }
+        .btn-ghost {
+          background: transparent; color: var(--accent);
+          border: 1.5px solid var(--accent); border-radius: 980px;
+          padding: 12px 24px; font-size: 15px; font-weight: 500;
+          cursor: pointer; text-decoration: none;
+          transition: background 0.2s, color 0.2s;
+          font-family: inherit;
+        }
+        .btn-ghost:hover { background: var(--accent-soft); }
+
+        /* ── Sections ── */
+        .section {
+          max-width: 1000px; margin: 0 auto;
+          padding: 100px 24px;
+        }
+        .section-label {
+          font-size: 13px; font-weight: 500; letter-spacing: 0.08em;
+          text-transform: uppercase; color: var(--accent);
+          margin-bottom: 16px;
+        }
+        .section-title {
+          font-size: clamp(32px, 5vw, 52px);
+          font-weight: 700; letter-spacing: -0.03em;
+          color: var(--text); margin-bottom: 56px; line-height: 1.1;
+        }
+
+        /* ── About grid ── */
+        .about-grid {
+          display: grid; grid-template-columns: 1fr 1fr;
+          gap: 48px; align-items: start;
+        }
+        @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
+        .about-body {
+          font-size: 17px; line-height: 1.7;
+          color: var(--text-secondary);
+        }
+        .about-chips { display: flex; flex-direction: column; gap: 10px; }
+        .about-chip {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 14px; padding: 14px 20px;
+          font-size: 15px; color: var(--text); font-weight: 400;
+          display: flex; align-items: center; gap: 12px;
+        }
+        .about-chip span.icon { font-size: 20px; }
+
+        /* ── Experience ── */
+        .exp-list { display: flex; flex-direction: column; gap: 2px; }
+        .exp-card {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 18px; padding: 28px 32px;
+          transition: background 0.2s;
+        }
+        .exp-card:hover { background: var(--bg-card2); }
+        .exp-header {
+          display: flex; justify-content: space-between;
+          align-items: flex-start; margin-bottom: 4px; gap: 16px;
+          flex-wrap: wrap;
+        }
+        .exp-role {
+          font-size: 17px; font-weight: 600; color: var(--text);
+          letter-spacing: -0.01em;
+        }
+        .exp-period {
+          font-size: 13px; color: var(--text-secondary);
+          white-space: nowrap; margin-top: 2px;
+        }
+        .exp-company {
+          font-size: 14px; color: var(--accent); font-weight: 500;
+          margin-bottom: 16px;
+        }
+        .exp-bullets {
+          list-style: none; display: flex; flex-direction: column; gap: 8px;
+        }
+        .exp-bullets li {
+          font-size: 14px; color: var(--text-secondary);
+          padding-left: 16px; position: relative; line-height: 1.6;
+        }
+        .exp-bullets li::before {
+          content: "–"; position: absolute; left: 0;
+          color: var(--accent);
+        }
+
+        /* ── Skills grid ── */
+        .skills-grid {
+          display: grid; grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        @media (max-width: 680px) { .skills-grid { grid-template-columns: 1fr; } }
+        .skill-card {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 18px; padding: 24px 28px;
+        }
+        .skill-card-title {
+          font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+          text-transform: uppercase; color: var(--text-secondary);
+          margin-bottom: 14px;
+        }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag {
+          background: var(--tag-bg); color: var(--tag-text);
+          border-radius: 8px; padding: 5px 12px;
+          font-size: 13px; font-weight: 400;
+        }
+
+        /* ── Projects ── */
+        .projects-grid {
+          display: grid; grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        @media (max-width: 680px) { .projects-grid { grid-template-columns: 1fr; } }
+        .project-card {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 18px; padding: 28px 28px 24px;
+          display: flex; flex-direction: column;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .project-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 48px rgba(0,0,0,0.12);
+        }
+        .project-title {
+          font-size: 17px; font-weight: 600; color: var(--text);
+          margin-bottom: 10px; letter-spacing: -0.01em; line-height: 1.3;
+        }
+        .project-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .project-tag {
+          background: var(--accent-soft); color: var(--accent);
+          border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 500;
+        }
+        .project-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; flex: 1; }
+        .project-link {
+          margin-top: 20px; font-size: 14px; color: var(--accent);
+          text-decoration: none; font-weight: 500;
+          display: inline-flex; align-items: center; gap: 4px;
+        }
+        .project-link:hover { text-decoration: underline; }
+
+        /* ── Education ── */
+        .edu-list { display: flex; flex-direction: column; gap: 16px; }
+        .edu-card {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 18px; padding: 24px 28px;
+          display: flex; justify-content: space-between;
+          align-items: flex-start; gap: 16px; flex-wrap: wrap;
+        }
+        .edu-degree { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .edu-school { font-size: 14px; color: var(--accent); font-weight: 500; margin-bottom: 4px; }
+        .edu-detail { font-size: 14px; color: var(--text-secondary); }
+        .edu-period { font-size: 13px; color: var(--text-secondary); white-space: nowrap; margin-top: 4px; }
+
+        /* ── Contact ── */
+        .contact-inner {
+          text-align: center; max-width: 560px; margin: 0 auto;
+        }
+        .contact-body {
+          font-size: 17px; color: var(--text-secondary);
+          margin-bottom: 36px; line-height: 1.65;
+        }
+        .contact-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+        .contact-link {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 12px; padding: 12px 20px;
+          font-size: 14px; color: var(--text); text-decoration: none;
+          transition: background 0.2s, transform 0.2s;
+          font-weight: 500;
+        }
+        .contact-link:hover { background: var(--bg-card2); transform: translateY(-2px); }
+
+        /* ── Footer ── */
+        .footer {
+          border-top: 1px solid var(--border);
+          padding: 32px 24px;
+          text-align: center;
+        }
+        .footer-inner { max-width: 1000px; margin: 0 auto; }
+        .footer-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+        .footer-icons {
+          display: flex; justify-content: center; gap: 28px;
+          font-size: 18px; color: var(--text-secondary);
+        }
+        .footer-icons a { color: inherit; transition: color 0.2s; cursor: pointer; }
+        .footer-icons a:hover { color: var(--text); }
+
+        /* ── Divider ── */
+        .divider {
+          height: 1px; background: var(--border);
+          max-width: 1000px; margin: 0 auto;
+        }
+
+        /* ── Hero animation ── */
+        @keyframes heroFade {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: none; }
+        }
+        .hero-eyebrow { animation: heroFade 0.6s 0.1s both ease-out; }
+        .hero-title   { animation: heroFade 0.6s 0.25s both ease-out; }
+        .hero-sub     { animation: heroFade 0.6s 0.4s both ease-out; }
+        .hero-ctas    { animation: heroFade 0.6s 0.55s both ease-out; }
+
+        @media (max-width: 500px) {
+          .nav-links { display: none; }
+        }
+      `}</style>
+
+      {/* ── NAV ── */}
+      <nav className="nav">
+        <div className="nav-inner">
+          <span className="nav-logo">Daniel Khan</span>
+          <ul className="nav-links">
+            {["About", "Experience", "Skills", "Projects", "Education", "Contact"].map((s) => (
+              <li key={s}>
+                <a onClick={() => scrollTo(s.toLowerCase())}>{s}</a>
+              </li>
+            ))}
+          </ul>
+          <div className="nav-actions">
+            <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark mode">
+              <TfiLightBulb />
+            </button>
           </div>
-          
-          <section id="About">
-          <h2 className="mb-4 text-4xl py-10 font-bold text-center text-gray-900 dark:text-white">A bit about me...</h2>
-            
-          <div className="grid gap-4 md:grid-cols-2 md:gap-4 lg:grid-cols-2 lg:gap-20 max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-              
-            <p className="text-xl py-4 text-left text-gray-800 dark:text-gray-200 md:text-2xl lg:text-2xl">
-            I am a highly motivated and ambitious individual with a passion for engineering and technology. I am always looking for new opportunities to learn and grow, and am committed to staying up-to-date with the latest developments in my field. I have a strong interest in problem-solving and innovation, and am dedicated to using my skills and knowledge to make a positive difference in the world. 
-              </p>
-            <a className="text-xl py-4 text-gray-800 dark:text-gray-200 md:text-2xl lg:text-2xl">
-            <p className="pb-4 text-left">
-              👨🏽‍💻 Product Engineer Intern @ Diversio
-            </p>
-            <p className="pb-4 text-left" >
-              📚 Computer Engineering @ Ryerson University, 4th year
-            </p>
-            <p className="pb-4 text-left">
-              🦾 Software Controls Member @ Ryerson Rams Robotics (R3)
-            </p>
-            </a>
-            </div>
-          </section>
-
- 
-        <section id="Experience">
-          <div className="max-w-screen-xl mx-auto pb-10 px-4 sm:px-6 lg:px-8">
-            
-          <h2 className="mb-4 py-10 text-4xl  font-bold text-center text-gray-900 dark:text-white text-center">My Experience</h2>
-          
-          <div className="-my-8 divide-y-2 divide-gray-900 dark:divide-gray-100">
-            <div className="py-8 flex flex-wrap md:flex-nowrap">
-              <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
-                <span className="font-normal text-gray-900 dark:text-white">Diversio</span>
-                <span className="mt-1 text-gray-400 dark:text-gray-500 text-sm">May 2022 - December 2022</span>
-              </div>
-              <div className="md:flex-grow">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white title-font mb-2">Product Engineering Intern</h2>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Creating Diverse and Inclusive workplaces using Python (Django) & React</p>
-                <a href="https://diversio.com/diversio-insights/"><button type="button" className="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800 hover:scale-105">Diversio Insights</button></a>
-              </div>
-            </div>
-            
-            <div className="py-8 flex flex-wrap md:flex-nowrap">
-              <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
-                <span className="font-normal text-gray-900 dark:text-white">Loblaw Companies Limited</span>
-                <span className="mt-1 text-gray-400 dark:text-gray-500 text-sm">May 2021 - December 2021</span>
-              </div>
-              <div className="md:flex-grow">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white title-font mb-2">Automation Developer Intern</h2>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Attended and provided updates in daily scrum meetings, specifically on a Power Automate flow which created and logged COVID-19 store operating hours for 1300+ Loblaw and Shoppers Drug Mart pharmacy locations, decreasing manual processes and increasing efficiency by 98%</p>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Developed a Python cript that performed hourly checks on file system’s (AIX) storage limits and reported results back to the system administrator via email, creating ServiceNow tickets for escalation when necessary to ensure the system did not exceed the server threshold</p>
-                <a href="https://www.federalrapidscreening.morewaystobenefit.ca/"><button type="button" className="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800  hover:scale-105">Rapid Screening Program</button></a>
-              </div>
-            </div>
-            <div className="py-8 flex flex-wrap md:flex-nowrap">
-              <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
-                <span className="font-normal text-gray-900 dark:text-white">Ryerson Rams Robotics (R3)</span>
-                <span className="mt-1 text-gray-400 dark:text-gray-500 text-sm">May 2022 - December 2022</span>
-              </div>
-              <div className="md:flex-grow">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white title-font mb-2">Software Controls Developer</h2>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Designed and programmed a hockey goalkeeping robot for TSN which can be used wirelessly (through wifi connection) to accurately and easily control the arms of a goalkeeper</p>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Responsible for programming a microcontroller (ESP8266) along with a series of motors and actuators to wirelessly control a robot over a Socket Server with TCP and HTTP communication</p>
-                <a href="https://teamr3.ca/"><button  type="button" className="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800  hover:scale-105">R3 Site</button></a>
-              </div>
-            </div>
-
-            <div className="py-8 flex flex-wrap md:flex-nowrap">
-              <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
-                <span className="font-normal text-gray-900 dark:text-white">Freelance</span>
-                <span className="mt-1 text-gray-400 dark:text-gray-500 text-sm">May 2022 - December 2022</span>
-              </div>
-              <div className="md:flex-grow">
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white title-font mb-2">Software Developer</h2>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Created Python Scripts using social media API’s in order to handle social media account activity such as posting to pages and viewing analytics</p>
-                <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">Automated social media posting, decreasing overall manual time spent by 90% (from 1 hour to 5 minutes) and successfully gaining 100k interactions per month</p>
-              </div>
-            </div>        
-          </div>
-          </div>
-        </section> 
-
-
-
-
-
-        <section className="text-white" id="Projects">
-          
-          <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-
-            <div className="mx-auto max-w-lg text-center">
-              <h2 className="text-3xl font-bold sm:text-4xl text-gray-800 dark:text-gray-200">Some of my Projects</h2>
-              <p className="mt-4 text-center text-gray-800 dark:text-gray-200">
-                Here are some of the projects I have worked on!
-              </p>
-            
-            </div>
-
-              <div className="py-6 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <a className="relative p-px rounded border border-gray-200 dark:border-gray-700 bg-day dark:bg-night bg-opacity-50 dark:bg-opacity-50 flex flex-wrap transform transition duration-500 cursor-pointer group hover:scale-105" href="/https://github.com/d27khan">
-                  <div className="absolute bottom-0 left-0 w-full h-1 duration-300 origin-left transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 left-0 w-1 h-full duration-300 origin-bottom transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="absolute top-0 left-0 w-full h-1 duration-300 origin-right transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 right-0 w-1 h-full duration-300 origin-top transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="relative p-4 space-y-2 bg-day dark:bg-night">
-                    <h2 className="mt-2 mb-2 w-11/12 md:text-xl font-bold inline-block">🧴DermaCare</h2>
-                    <a href="https://github.com/d27khan"><RiGithubLine  className="cursor-pointer inset-y-0 right-0 inline-block"/></a>
-                    <span className="w-full inline-flex gap-2 items-start">
-                      <span className="inline-block py-1 px-2 rounded border border-gray-700 text-xs font-medium">Python</span>
-                      <span className="inline-block py-1 px-2 rounded border border-gray-700 text-xs font-medium">Google Cloud</span>
-                    </span>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 tracking-wider">A Web Application that analyzes your skin using machine learning</p>
-                  </div>
-                </a>
-                <a className="relative p-px rounded border border-gray-200 dark:border-gray-700 bg-day dark:bg-night bg-opacity-50 dark:bg-opacity-50 flex flex-wrap transform transition duration-500 cursor-pointer group hover:scale-105" href="https://github.com/d27khan">
-                  <div className="absolute bottom-0 left-0 w-full h-1 duration-300 origin-left transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 left-0 w-1 h-full duration-300 origin-bottom transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="absolute top-0 left-0 w-full h-1 duration-300 origin-right transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 right-0 w-1 h-full duration-300 origin-top transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="relative p-4 space-y-2  dark:bg-night">
-                    <a href=""><MdOutlineFeaturedPlayList  className="align-text-top inline-block pr-1"/></a>
-                    <h2 className="mt-2 w-10/12 mb-2 md:text-xl font-bold inline-block">LSPro</h2>
-                    <a href="https://github.com/d27khan"><RiGithubLine  className="cursor-pointer inset-y-0 right-0 inline-block"/></a>
-                    <span className="w-full inline-flex gap-2 items-start">
-                      <span className="inline-block py-1 px-2 rounded border border-gray-700 text-xs font-medium">C</span>
-                    </span>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 tracking-wider">A Command line tool aiming to make the list command interactive</p>
-                  </div>
-                </a>
-                <a className="relative p-px rounded border border-gray-200 dark:border-gray-700 bg-day dark:bg-night bg-opacity-50 dark:bg-opacity-50 flex flex-wrap transform transition duration-500 cursor-pointer group hover:scale-105" href="https://github.com/d27khan">
-                  <div className="absolute bottom-0 left-0 w-full h-1 duration-300 origin-left transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 left-0 w-1 h-full duration-300 origin-bottom transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="absolute top-0 left-0 w-full h-1 duration-300 origin-right transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 right-0 w-1 h-full duration-300 origin-top transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="relative p-4 space-y-2 bg-day dark:bg-night">
-                    <a href=""><ImAmazon  className="align-text-top inline-block pr-1"/></a>
-                    <h2 className="mt-2 w-10/12 mb-2 md:text-xl font-bold inline-block">Amazon Price Tracker</h2>
-                    <a href="https://github.com/d27khan"><RiGithubLine  className="cursor-pointer inset-y-0 right-0 inline-block"/></a>
-                    <span className="w-full inline-flex justify-between items-center">
-                      <span className="inline-block py-1 px-2 rounded border border-gray-700 text-xs font-medium">Python</span>
-                    </span>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 tracking-wider">Keep track of prices on your favourite Amazon items with this script!</p>
-                  </div>
-                </a>
-                <a className="relative p-px rounded border border-gray-200 dark:border-gray-700 bg-day dark:bg-night bg-opacity-50 dark:bg-opacity-50 flex flex-wrap transform transition duration-500 cursor-pointer group hover:scale-105" href="https://github.com/d27khan">
-                  <div className="absolute bottom-0 left-0 w-full h-1 duration-300 origin-left transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 left-0 w-1 h-full duration-300 origin-bottom transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="absolute top-0 left-0 w-full h-1 duration-300 origin-right transform scale-x-0 bg-accent group-hover:scale-x-100"></div>
-                  <div className="absolute bottom-0 right-0 w-1 h-full duration-300 origin-top transform scale-y-0 bg-accent group-hover:scale-y-100"></div>
-                  <div className="relative p-4 space-y-2 bg-day dark:bg-night">
-                    <h2 className="mt-2 mb-2 w-11/12 md:text-xl inline-block font-bold">📚 Book Store App</h2>
-                    <a href="https://github.com/d27khan"><RiGithubLine  className="cursor-pointer inset-y-0 right-0 inline-block"/></a>
-                    <span className="w-full inline-flex justify-between items-center">
-                      <span className="inline-block py-1 px-2 rounded border border-gray-700 text-xs font-medium">Java</span>
-                    </span>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 tracking-wider">A stand alone library management desktop applicaiton</p>
-                  </div>
-                </a>
-
-                
-              </div>
-
-          </div>
-        </section>
-
-
-        <section className="text-white" id="CurrentProjects">
-          
-          <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold sm:text-4xl text-center text-gray-800 dark:text-gray-200">What I&apos;m up to</h2>
-            
-            <div className="mx-auto max-w-lg py-4">
-              
-              
-              <div className="bg-yellow-100 w-full rounded border-l-4 py-2 border-yellow-500">
-                <div className="flex space-x-3">
-                <a href=""><VscWarning  className="align-text-bottom text-bold text-lg text-yellow-500 pl-1 right-0 inline-block"/></a>
-                
-                  <div className="flex-1 leading-tight text-md  text-gray-900">I will be updating this section soon with my current projects</div>
-                </div>
-              </div>
-              <p className="mt-4 text-center inline-block text-gray-800 dark:text-gray-200 ">Checkout my github</p>
-              <a href="https://github.com/d27khan"><VscGithubInverted  className="cursor-pointer text-red-600 dark:text-red-400 align-text-bottom pl-1 right-0 inline-block"/></a>
-            </div>
-          </div>
-        </section>
-
-
-        <section className="py-10" id="Contact">
-          <div>
-            <div className="py-8 lg:py-16 px-6 mx-auto max-w-screen-md sm:px-6 lg:px-8">
-              <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">Lets get in Touch!</h2>
-              <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl"></p>
-              <form action="#" className="space-y-8">
-                  <div>
-                      <label htmlFor="email" className="block mb-2 text-md font-medium text-gray-900 dark:text-gray-300">Your email</label>
-                      <input type="email" id="email" className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="name@email.com" required></input>
-                  </div>
-                  <div>
-                      <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Subject</label>
-                      <input type="text" id="subject" className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="Let me know what I can do!" required></input>
-                  </div>
-                  <div className="sm:col-span-2">
-                      <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Your message</label>
-                      <textarea id="message" rows="6" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Leave a comment..."></textarea>
-                  </div>
-                  <button type="submit" className="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Send message</button>
-              </form>
-            </div>
-          </div>
-          <div className="flex flex-col gap-10 py-10 lg:flex-row lg:flex-wrap max-w-screen-xl mx-auto">
-
-          <a href="#"><AiOutlineToTop  className="text-4xl cursor-pointer font-black text-gray-900 dark:text-white justify-end"/></a>
-          </div>
-        </section>
-        
-      </body>
-      <footer className=" bg-red pb-10 bg-stone-100 px-10 dark:bg-zinc-800 sm:px-20 lg:px-40">
-          <div className="max-w-screen-xl mx-auto">
-            <p className="text-center font-light py-2 leading-8 justify-center text-gray-800 dark:text-gray-200">
-              Designed & built by Daniel Khan using tailwindcss & next.js
-            </p>
-            <div className="text-xl flex justify-center gap-16 py-3 text-gray-600 dark:text-gray-400">
-              <a href="https://github.com/d27khan"><VscGithubInverted  className=" cursor-pointer"/></a>
-              <a href="https://linkedin.com/in/danielkhan-"><SiLinkedin className=" cursor-pointer" /></a>
-              <a href="https://www.google.com/search?q=toronto"><BsFillPinMapFill  className=" cursor-pointer"/></a>
-              <a href="mailto:daniel.khan@ryerson.ca"><GrMail className=" cursor-pointer" /></a>
-              <a href="https://www.torontomu.ca/programs/undergraduate/computer-engineering/"><IoMdSchool className=" cursor-pointer" /></a>
-            </div>
-          </div>
-          </footer>
         </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section id="hero">
+        <div className="hero">
+          <p className="hero-eyebrow">Engineer · Toronto, ON</p>
+          <h1 className="hero-title">
+            <span className="hero-hi">Hi, I&apos;m</span>
+            <span className="hero-hi">Daniel Khan.</span>
+          </h1>
+          <p className="hero-sub">
+            Building reliable, scalable systems at the intersection of supply chain automation, cloud infrastructure, and site reliability engineering.
+          </p>
+          <div className="hero-ctas">
+            <a
+              href="mailto:d27khan@gmail.com"
+              className="btn-primary"
+            >
+              Get in touch
+            </a>
+            <a
+              href="https://github.com/d27khan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── ABOUT ── */}
+      <section id="about">
+        <FadeSection>
+          <div className="section">
+            <p className="section-label">About</p>
+            <h2 className="section-title">A bit about me</h2>
+            <div className="about-grid">
+              <p className="about-body">
+                I&apos;m an engineer with experience in production systems, automation, and large-scale system integrations across supply chain and warehouse environments. My background spans incident triage, post-mortem analysis, Python and SQL automation, API-driven debugging, and network security coordination.
+                <br /><br />
+                I&apos;m actively pioneering AI-driven automation across supply chain operations at Loblaw, and building SRE tooling to deepen my work in site reliability engineering.
+              </p>
+              <div className="about-chips">
+                <div className="about-chip"><span className="icon">🏢</span> Senior Product Analyst @ Loblaw</div>
+                <div className="about-chip"><span className="icon">🎓</span> M.Sc. ECE @ University of Colorado Boulder</div>
+                <div className="about-chip"><span className="icon">📍</span> Toronto, ON</div>
+                <div className="about-chip"><span className="icon">🤖</span> AI × Supply Chain Automation</div>
+                <div className="about-chip"><span className="icon">🔧</span> SRE Tooling & Observability</div>
+              </div>
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── EXPERIENCE ── */}
+      <section id="experience">
+        <FadeSection>
+          <div className="section">
+            <p className="section-label">Career</p>
+            <h2 className="section-title">Experience</h2>
+            <div className="exp-list">
+              {experiences.map((e, i) => (
+                <div className="exp-card" key={i}>
+                  <div className="exp-header">
+                    <span className="exp-role">{e.role}</span>
+                    <span className="exp-period">{e.period}</span>
+                  </div>
+                  <div className="exp-company">{e.company} · {e.location}</div>
+                  <ul className="exp-bullets">
+                    {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── SKILLS ── */}
+      <section id="skills">
+        <FadeSection>
+          <div className="section">
+            <p className="section-label">Toolkit</p>
+            <h2 className="section-title">Skills</h2>
+            <div className="skills-grid">
+              {Object.entries(skills).map(([cat, items]) => (
+                <div className="skill-card" key={cat}>
+                  <div className="skill-card-title">{cat}</div>
+                  <div className="skill-tags">
+                    {items.map((s) => <span className="skill-tag" key={s}>{s}</span>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── PROJECTS ── */}
+      <section id="projects">
+        <FadeSection>
+          <div className="section">
+            <p className="section-label">Work</p>
+            <h2 className="section-title">Projects</h2>
+            <div className="projects-grid">
+              {projects.map((p, i) => (
+                <div className="project-card" key={i}>
+                  <div className="project-title">{p.title}</div>
+                  <div className="project-stack">
+                    {p.stack.map((t) => <span className="project-tag" key={t}>{t}</span>)}
+                  </div>
+                  <p className="project-desc">{p.description}</p>
+                  {p.link && (
+                    <a href={p.link} className="project-link" target="_blank" rel="noopener noreferrer">
+                      View on GitHub →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── EDUCATION ── */}
+      <section id="education">
+        <FadeSection>
+          <div className="section">
+            <p className="section-label">Academic</p>
+            <h2 className="section-title">Education</h2>
+            <div className="edu-list">
+              {education.map((e, i) => (
+                <div className="edu-card" key={i}>
+                  <div>
+                    <div className="edu-degree">{e.degree}</div>
+                    <div className="edu-school">{e.school}</div>
+                    {e.detail && <div className="edu-detail">{e.detail}</div>}
+                  </div>
+                  <div className="edu-period">{e.period}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      <div className="divider" />
+
+      {/* ── CONTACT ── */}
+      <section id="contact">
+        <FadeSection>
+          <div className="section">
+            <div className="contact-inner">
+              <p className="section-label" style={{ textAlign: "center" }}>Contact</p>
+              <h2 className="section-title" style={{ textAlign: "center" }}>
+                Let&apos;s connect
+              </h2>
+              <p className="contact-body">
+                Whether it&apos;s a collaboration, an opportunity, or just a conversation — I&apos;d love to hear from you.
+              </p>
+              <div className="contact-links">
+                <a href="mailto:d27khan@gmail.com" className="contact-link">
+                  <GrMail /> d27khan@gmail.com
+                </a>
+                <a href="https://linkedin.com/in/danielkhan-" className="contact-link" target="_blank" rel="noopener noreferrer">
+                  <SiLinkedin /> LinkedIn
+                </a>
+                <a href="https://github.com/d27khan" className="contact-link" target="_blank" rel="noopener noreferrer">
+                  <VscGithubInverted /> GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+        </FadeSection>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="footer">
+        <div className="footer-inner">
+          <p className="footer-text">Designed & built by Daniel Khan · Next.js & Tailwind</p>
+          <div className="footer-icons">
+            <a href="https://github.com/d27khan" target="_blank" rel="noopener noreferrer"><VscGithubInverted /></a>
+            <a href="https://linkedin.com/in/danielkhan-" target="_blank" rel="noopener noreferrer"><SiLinkedin /></a>
+            <a href="mailto:d27khan@gmail.com"><GrMail /></a>
+            <a href="https://www.google.com/maps/search/toronto"><BsFillPinMapFill /></a>
+            <a onClick={() => setDarkMode(!darkMode)} title="Toggle theme"><TfiLightBulb /></a>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
